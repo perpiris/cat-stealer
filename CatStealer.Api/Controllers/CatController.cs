@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CatStealer.Api.Controllers;
 
+[ApiController]
 [Route("cats")]
 public class CatController : ControllerBase
 {

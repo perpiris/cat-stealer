@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CatStealer.Api.Controllers;
 
+[ApiController]
 [Route("jobs")]
 public class JobController : ControllerBase
 {
