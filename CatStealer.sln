@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5F836B3D-05C7-4BC5-B762-9497DBC8BED3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6FA31FA8-A6E3-431E-A6EA-DB7E390E4030}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatStealer.Domain", "CatStealer.Domain\CatStealer.Domain.csproj", "{70C1145A-B250-495B-8FA7-8EB88DC00D40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatStealer.Application", "CatStealer.Application\CatStealer.Application.csproj", "{65F143CD-0778-48DC-9033-F88CE4E008C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatStealer.Api", "CatStealer.Api\CatStealer.Api.csproj", "{6D5ABC15-00F7-4DBE-9E59-9C2C6C7E6676}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{70C1145A-B250-495B-8FA7-8EB88DC00D40} = {5F836B3D-05C7-4BC5-B762-9497DBC8BED3}
+		{65F143CD-0778-48DC-9033-F88CE4E008C6} = {5F836B3D-05C7-4BC5-B762-9497DBC8BED3}
+		{6D5ABC15-00F7-4DBE-9E59-9C2C6C7E6676} = {5F836B3D-05C7-4BC5-B762-9497DBC8BED3}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70C1145A-B250-495B-8FA7-8EB88DC00D40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70C1145A-B250-495B-8FA7-8EB88DC00D40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70C1145A-B250-495B-8FA7-8EB88DC00D40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70C1145A-B250-495B-8FA7-8EB88DC00D40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65F143CD-0778-48DC-9033-F88CE4E008C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65F143CD-0778-48DC-9033-F88CE4E008C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65F143CD-0778-48DC-9033-F88CE4E008C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65F143CD-0778-48DC-9033-F88CE4E008C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D5ABC15-00F7-4DBE-9E59-9C2C6C7E6676}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D5ABC15-00F7-4DBE-9E59-9C2C6C7E6676}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D5ABC15-00F7-4DBE-9E59-9C2C6C7E6676}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D5ABC15-00F7-4DBE-9E59-9C2C6C7E6676}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
