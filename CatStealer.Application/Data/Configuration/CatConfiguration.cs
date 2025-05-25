@@ -27,7 +27,8 @@ public class CatConfiguration : IEntityTypeConfiguration<Cat>
             .IsRequired();
 
         builder.Property(c => c.Image)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(255);
 
         builder.Property(c => c.Created)
             .IsRequired()

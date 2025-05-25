@@ -2,6 +2,7 @@ using CatStealer.Application.Data;
 using CatStealer.Application.Services;
 using CatStealer.Application.Services.Implementation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,12 +13,12 @@ builder.Services.AddDbContext<DataContext>(options =>
         sqlOptions.MigrationsAssembly(typeof(DataContext).Assembly.GetName().Name);
     }));
 
+builder.Services.AddHttpClient();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ICatService, CatService>();
-builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IJobService, JobService>();
 
 var app = builder.Build();
@@ -40,6 +41,19 @@ using (var scope = app.Services.CreateScope())
     {
         context.Database.Migrate();
     }
+}
+
+var configuredImageBasePath = app.Configuration["FileStorage:BasePath"];
+var imageStoragePhysicalPath = !string.IsNullOrWhiteSpace(configuredImageBasePath) ? Path.GetFullPath(configuredImageBasePath) :
+    Path.Combine(AppContext.BaseDirectory, "CatImages");
+
+if (Directory.Exists(imageStoragePhysicalPath))
+{
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(imageStoragePhysicalPath),
+        RequestPath = "/StoredCatImages"
+    });
 }
 
 app.Run();

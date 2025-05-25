@@ -1,4 +1,6 @@
 ﻿using System.Net;
+using CatStealer.Api.Contracts.Responses;
+using CatStealer.Api.Mappings;
 using CatStealer.Application.Common;
 using CatStealer.Application.Services;
 using CatStealer.Domain.Entities;
@@ -19,8 +21,24 @@ public class CatController : ControllerBase
         _catService = catService;
     }
     
+    [HttpPost("fetch")]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.Accepted)]
+    [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
+    public async Task<IActionResult> FetchCats()
+    {
+        const int numberOfCatsToFetch = 25;
+        var result = await _catService.FetchCatsAsync(numberOfCatsToFetch);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Error);
+        }
+        
+        return Accepted();
+    }
+    
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(Cat), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(CatResponse), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> GetCatById(int id)
@@ -37,11 +55,11 @@ public class CatController : ControllerBase
             return NotFound($"Cat with ID {id} was not found.");
         }
         
-        return Ok(result.Data);
+        return Ok(result.Data.MapToResponse());
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(PagedResult<Cat>), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(PagedResult<CatResponse>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(string), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> GetPaginatedCats(int pageNumber = 1, int pageSize = 10, string? tag = null)
     {
@@ -52,6 +70,6 @@ public class CatController : ControllerBase
             return BadRequest(result.Error);
         }
         
-        return Ok(result.Data);
+        return Ok(result.Data.Items.Select(x => x.MapToResponse()));
     }
 }
