@@ -5,7 +5,9 @@ namespace CatStealer.Application.Services;
 
 public interface ICatService
 {
-    Task<Result<int>> FetchCatsAsync(int count);
+    Task<Result<string>> EnqueueFetchCatsJobAsync(int count);
+    
+    Task ProcessFetchCatsJobAsync(string jobId, int count, CancellationToken cancellationToken);
     
     Task<Result<Cat?>> GetCatByIdAsync(int catId);
 

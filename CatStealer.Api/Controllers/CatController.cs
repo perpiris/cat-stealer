@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using CatStealer.Api.Contracts.Responses;
 using CatStealer.Api.Mappings;
+using CatStealer.Api.Responses;
 using CatStealer.Application.Common;
 using CatStealer.Application.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -26,14 +27,17 @@ public class CatController : ControllerBase
     public async Task<IActionResult> FetchCats()
     {
         const int numberOfCatsToFetch = 25;
-        var result = await _catService.FetchCatsAsync(numberOfCatsToFetch);
+        var result = await _catService.EnqueueFetchCatsJobAsync(numberOfCatsToFetch);
 
-        if (!result.IsSuccess)
+        if (!result.IsSuccess || string.IsNullOrEmpty(result.Data))
         {
             return BadRequest(result.Error);
         }
         
-        return Accepted();
+        var jobId = result.Data;
+        var statusUrl = Url.Action(nameof(JobController.GetJobStatus), "Job", new { id = jobId }, Request.Scheme);
+        
+        return Accepted(statusUrl, new JobAcceptedResponse { JobId = jobId, StatusUrl = statusUrl });
     }
     
     [HttpGet("{id:int}")]

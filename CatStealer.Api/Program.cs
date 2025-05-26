@@ -1,3 +1,4 @@
+using CatStealer.Application.BackgroundServices;
 using CatStealer.Application.Data;
 using CatStealer.Application.Services;
 using CatStealer.Application.Services.Implementation;
@@ -19,7 +20,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ICatService, CatService>();
-builder.Services.AddScoped<IJobService, JobService>();
+builder.Services.AddSingleton<IBackgroundTaskQueue>(sp => new BackgroundTaskQueue(capacity: 100));
+builder.Services.AddSingleton<IJobService, JobService>();
+builder.Services.AddHostedService<CatFetchingBackgroundService>();
 
 var app = builder.Build();
 
