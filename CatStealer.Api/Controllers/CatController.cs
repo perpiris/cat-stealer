@@ -3,7 +3,6 @@ using CatStealer.Api.Contracts.Responses;
 using CatStealer.Api.Mappings;
 using CatStealer.Application.Common;
 using CatStealer.Application.Services;
-using CatStealer.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CatStealer.Api.Controllers;

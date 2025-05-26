@@ -12,7 +12,8 @@ public class CatService : ICatService
     private readonly DataContext _dataContext;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
-    private const string DefaultImageStorageFolder = "CatImages"; 
+    private const string DefaultImageStorageFolder = "CatImages";
+    private readonly string _apiKey;
     
     private class CaasBreed
     {
@@ -39,6 +40,11 @@ public class CatService : ICatService
         _dataContext = dataContext;
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
+        
+        var apiKey = _configuration["CaaS:ApiKey"];
+        ArgumentNullException.ThrowIfNull(apiKey);
+        
+        _apiKey = apiKey;
     }
     
     public async Task<Result<int>> FetchCatsAsync(int count)
@@ -49,6 +55,7 @@ public class CatService : ICatService
         }
 
         var httpClient = _httpClientFactory.CreateClient();
+        httpClient.DefaultRequestHeaders.Add("x-api-key", _apiKey);
         List<CaasCatImage>? caasImages;
 
         try
@@ -113,8 +120,8 @@ public class CatService : ICatService
             {
                 var temperamentString = caasImage.Breeds.First().Temperament;
                 var tagNames = temperamentString.Split(',')
-                    .Select(t => t.Trim())
-                    .Where(t => !string.IsNullOrWhiteSpace(t))
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
                     .Distinct(StringComparer.OrdinalIgnoreCase);
 
                 foreach (var tagName in tagNames)
@@ -160,10 +167,14 @@ public class CatService : ICatService
         {
             return Result.Failure<Cat?>("Invalid cat id");
         }
-
+        
         try
         {
-            var cat = await _dataContext.Cats.FindAsync(catId);
+            var cat = await _dataContext.Cats
+                .Include(x => x.Tags)
+                .Where(x => x.Id == catId)
+                .FirstOrDefaultAsync();
+            
             return Result.Success(cat);
         }
         catch (Exception ex)
@@ -176,13 +187,14 @@ public class CatService : ICatService
     {
         try
         {
-            var query = _dataContext.Cats.AsNoTracking();
+            var query = _dataContext.Cats
+                .Include(x => x.Tags).AsNoTracking();
             
             if (!string.IsNullOrEmpty(tag))
             {
                 if (!tag.All(char.IsLetter))
                 {
-                    return Result.Failure<PagedResult<Cat>>("Invalid tah");
+                    return Result.Failure<PagedResult<Cat>>("Invalid tag");
                 }
                 
                 query = query.Where(c => c.Tags.Any(t => t.Name == tag));
