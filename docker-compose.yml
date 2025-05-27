@@ -10,8 +10,9 @@ services:
       - "5000:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=CatStealerDB;User Id=sa;Password={DB_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=true
-      - CaaS__ApiKey={CAAS_API_KEY}
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=CatStealerDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=true
+      - CaaS__ApiKey=${CAAS_API_KEY}
+      - FileStorage__BasePath=/app/CatImages
     volumes:
       - cat_images:/app/CatImages
     depends_on:
@@ -19,12 +20,13 @@ services:
         condition: service_healthy
     networks:
       - catstealer-network
+    restart: unless-stopped
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: catstealer-sqlserver
     environment:
-      - SA_PASSWORD={DB_PASSWORD}
+      - SA_PASSWORD=${SA_PASSWORD}
       - ACCEPT_EULA=Y
       - MSSQL_PID=Express
     ports:
@@ -32,13 +34,14 @@ services:
     volumes:
       - sqlserver_data:/var/opt/mssql
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P {DB_PASSWORD} -Q 'SELECT 1' || exit 1"]
-      interval: 10s
-      timeout: 3s
-      retries: 10
-      start_period: 10s
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '${SA_PASSWORD}' -Q 'SELECT 1' -C || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
     networks:
       - catstealer-network
+    restart: unless-stopped
 
 volumes:
   sqlserver_data:
