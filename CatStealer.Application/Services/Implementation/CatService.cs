@@ -120,8 +120,8 @@ public class CatService : ICatService
             var imageStorageAbsolutePath = GetImageStorageBasePath();
             Directory.CreateDirectory(imageStorageAbsolutePath);
             
-            var baseUrl = _configuration["FileStorage:BaseUrl"] ?? "http://localhost:5000";
-            var requestPath = _configuration["FileStorage:RequestPath"] ?? "/StoredCatImages";
+            var baseUrl = _configuration["FileStorage:BaseUrl"]!;
+            var requestPath = _configuration["FileStorage:RequestPath"]!;
 
             foreach (var caasImage in caasImages.Where(x => !string.IsNullOrWhiteSpace(x.Id) && !string.IsNullOrWhiteSpace(x.Url) && !existingCatApiIdList.Contains(x.Id)))
             {
@@ -160,7 +160,7 @@ public class CatService : ICatService
                     CatId = caasImage.Id,
                     Width = caasImage.Width,
                     Height = caasImage.Height,
-                    Image = $"{baseUrl.TrimEnd('/')}{requestPath}/{fileName}",
+                    Image = $"{baseUrl.TrimEnd('/')}/{requestPath.TrimStart('/')}/{fileName}",
                     Tags = new List<Tag>(),
                     Created = DateTime.UtcNow
                 };

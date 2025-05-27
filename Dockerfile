@@ -18,10 +18,10 @@ COPY . .
 
 # Build the application
 WORKDIR /src/CatStealer.Api
-RUN dotnet build -c Release -o /app/build
+RUN dotnet build -c Debug -o /app/build
 
 # Publish the application
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish -c Debug -o /app/publish
 
 # Use the official .NET 8 runtime image for the final stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
