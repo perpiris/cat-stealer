@@ -11,8 +11,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=CatStealerDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=true
-      - CaaS__ApiKey=${CAAS_API_KEY}
+      - CAAS__ApiKey=${CAAS_API_KEY}
       - FileStorage__BasePath=/app/CatImages
+      - FileStorage__BaseUrl=http://localhost:5000
+      - FileStorage__RequestPath=/StoredCatImages
     volumes:
       - cat_images:/app/CatImages
     depends_on:

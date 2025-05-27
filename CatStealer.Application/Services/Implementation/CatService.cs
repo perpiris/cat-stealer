@@ -119,11 +119,14 @@ public class CatService : ICatService
 
             var imageStorageAbsolutePath = GetImageStorageBasePath();
             Directory.CreateDirectory(imageStorageAbsolutePath);
+            
+            var baseUrl = _configuration["FileStorage:BaseUrl"] ?? "http://localhost:5000";
+            var requestPath = _configuration["FileStorage:RequestPath"] ?? "/StoredCatImages";
 
             foreach (var caasImage in caasImages.Where(x => !string.IsNullOrWhiteSpace(x.Id) && !string.IsNullOrWhiteSpace(x.Url) && !existingCatApiIdList.Contains(x.Id)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                string imagePath;
+                string fileName;
                 try
                 {
                     var imageBytes = await httpClient.GetByteArrayAsync(caasImage.Url, cancellationToken);
@@ -131,15 +134,15 @@ public class CatService : ICatService
                     {
                         continue;
                     }
-                    
+        
                     var fileExtension = Path.GetExtension(caasImage.Url);
                     if (string.IsNullOrEmpty(fileExtension) || fileExtension.Length > 5) 
                     {
                         fileExtension = ".jpg"; 
                     }
-                    var fileName = $"{caasImage.Id}{fileExtension}";
-                    imagePath = Path.Combine(imageStorageAbsolutePath, fileName);
-                    
+                    fileName = $"{caasImage.Id}{fileExtension}";
+                    var imagePath = Path.Combine(imageStorageAbsolutePath, fileName);
+        
                     await File.WriteAllBytesAsync(imagePath, imageBytes, cancellationToken);
                 }
                 catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -157,7 +160,7 @@ public class CatService : ICatService
                     CatId = caasImage.Id,
                     Width = caasImage.Width,
                     Height = caasImage.Height,
-                    Image = imagePath,
+                    Image = $"{baseUrl.TrimEnd('/')}{requestPath}/{fileName}",
                     Tags = new List<Tag>(),
                     Created = DateTime.UtcNow
                 };
