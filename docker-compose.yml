@@ -1,0 +1,49 @@
+﻿version: '3.8'
+
+services:
+  catstealer-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: catstealer-api
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=CatStealerDB;User Id=sa;Password={DB_PASSWORD};TrustServerCertificate=True;MultipleActiveResultSets=true
+      - CaaS__ApiKey={CAAS_API_KEY}
+    volumes:
+      - cat_images:/app/CatImages
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - catstealer-network
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: catstealer-sqlserver
+    environment:
+      - SA_PASSWORD={DB_PASSWORD}
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P {DB_PASSWORD} -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    networks:
+      - catstealer-network
+
+volumes:
+  sqlserver_data:
+  cat_images:
+
+networks:
+  catstealer-network:
+    driver: bridge
