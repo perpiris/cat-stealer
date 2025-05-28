@@ -12,4 +12,4 @@
    ```bash
    docker-compose up -d
    ```
-4. **Access the API at:** http://localhost:5000
+4. **Access the API at:** http://localhost:5000/swagger/index.html

@@ -161,8 +161,7 @@ public class CatService : ICatService
                     Width = caasImage.Width,
                     Height = caasImage.Height,
                     Image = $"{baseUrl.TrimEnd('/')}/{requestPath.TrimStart('/')}/{fileName}",
-                    Tags = new List<Tag>(),
-                    Created = DateTime.UtcNow
+                    Tags = new List<Tag>()
                 };
 
                 if (caasImage.Breeds != null && caasImage.Breeds.Count != 0 && !string.IsNullOrWhiteSpace(caasImage.Breeds.First().Temperament))
@@ -182,7 +181,7 @@ public class CatService : ICatService
                         }
                         else
                         {
-                            var newTag = new Tag { Name = tagName, Created = DateTime.UtcNow };
+                            var newTag = new Tag { Name = tagName };
                             existingTagsMap[tagNameLower] = newTag; 
                             newCat.Tags.Add(newTag);
                         }
